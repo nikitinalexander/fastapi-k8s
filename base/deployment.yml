@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rethinkdb-fastapi
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rethinkdb-fastapi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rethinkdb-fastapi
+    spec:
+      containers:
+        - image: alexandernikitin/rethinkdb-fastapi:latest
+          imagePullPolicy: Always
+          name: rethinkdb-fastapi
+          ports:
+            - containerPort: 80
+          env:
+            - name: RETHINKDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rethinkdb-client-pass
+                  key: password
+            - name: RETHINKDB_USER
+              value: client
+            - name: RETHINKDB_HOST
+              value: rethinkdb-0.rethinkdb
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 2
+            timeoutSeconds: 1
