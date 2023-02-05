@@ -23,7 +23,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: rethinkdb-client-pass
-                  key: password
+                  key: password.txt
             - name: RETHINKDB_USER
               value: client
             - name: RETHINKDB_HOST
