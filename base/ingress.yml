@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rethinkdb-client
+  name: rethinkdb-fastapi
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: rethinkdb-client
+                name: rethinkdb-fastapi
                 port:
                   number: 80
