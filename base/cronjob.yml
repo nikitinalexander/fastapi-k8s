@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rethinkdb-rotator
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: rotator-sa
+          containers:
+          - name: rethinkdb-rotator
+            image: alexandernikitin/rethinkdb-rotator:latest
+            command:
+            - /bin/bash
+            - rotate.sh
+            env:
+              - name: RETHINKDB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: rethinkdb-pass
+                    key: password
+              - name: RETHINKDB_USER
+                value: admin
+              - name: RETHINKDB_HOST
+                value: rethinkdb-0.rethinkdb
+              - name: REPO_OWNER
+                value: nikitinalexander
+              - name: REPO_NAME
+                value: fastapi-k8s
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1Gi
