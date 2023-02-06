@@ -3,3 +3,10 @@ kind: Kustomization
 resources:
 - ../../base
 namespace: production
+patchesJson6902:
+- target:
+    group: batch
+    version: v1
+    kind: CronJob
+    name: rethinkdb-rotator
+  path: env.yml
